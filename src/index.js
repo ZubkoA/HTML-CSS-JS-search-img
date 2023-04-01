@@ -79,7 +79,7 @@ function renderImg(data) {
         }
       )
       .join('');
-    imgContainer.innerHTML = markup;
+    imgContainer.insertAdjacentHTML('beforeend', markup);
     Notify.success(`Hooray! We found ${data.data.total} images.`);
     loadMoreBtn.style.display = 'flex';
     galleryIMG.refresh();
