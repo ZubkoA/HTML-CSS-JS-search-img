@@ -6,22 +6,23 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const imgContainer = document.querySelector('.gallery');
 const searchForm = document.getElementById('search-form');
 const searchInput = document.querySelector('input[type=text]');
-const loadMoreBtn = document.getElementById('load-more');
+const loadMoreBtn = document.querySelector('.load-more');
 let currentPage = 1;
 
 searchForm.addEventListener('submit', onSearchForm);
 loadMoreBtn.addEventListener('click', loadMore);
-window.addEventListener('scroll', update);
 
-function update() {
+loadMoreBtn.style.display = 'none';
+
+const scrollPage = () => {
   const { height: cardHeight } =
-    imgContainer.firstElementChild.getBoundingClientRect();
-
+    searchForm.firstElementChild.getBoundingClientRect();
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
   });
-}
+};
+
 const galleryIMG = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
@@ -75,8 +76,9 @@ function renderImg(data) {
     )
     .join('');
   imgContainer.innerHTML = markup;
-
-  loadMoreBtn.style = 'display: block';
+  loadMoreBtn.style.display = 'flex';
+  galleryIMG.refresh();
+  scrollPage();
 }
 
 async function search(query, page) {
@@ -98,7 +100,7 @@ async function search(query, page) {
 
 function loadMore() {
   currentPage++;
-  lightbox.refresh();
+  galleryIMG.refresh();
   let value = searchInput.value;
   search(value, currentPage);
 }
