@@ -1,4 +1,4 @@
-import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import axios from 'axios';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -16,7 +16,7 @@ loadMoreBtn.style.display = 'none';
 
 const scrollPage = () => {
   const { height: cardHeight } =
-    searchForm.firstElementChild.getBoundingClientRect();
+    imgContainer.firstElementChild.getBoundingClientRect();
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
@@ -32,7 +32,6 @@ function onSearchForm(e) {
   e.preventDefault();
   const getValue = searchInput.value;
   if (getValue === '') {
-    Notiflix.Notify.failure('Enter something.');
     return;
   }
 
@@ -40,21 +39,26 @@ function onSearchForm(e) {
   search(getValue, currentPage);
 }
 function renderImg(data) {
-  console.log(data.data);
-  imgContainer.innerHTML = '';
-  let markup;
-  markup = data.data.hits
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => {
-        return `
+  console.log(data.data.hits.length);
+  if (data.data.hits.length === 0) {
+    Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  } else if (data.data.hits.length !== 0) {
+    imgContainer.innerHTML = '';
+    let markup;
+    markup = data.data.hits
+      .map(
+        ({
+          webformatURL,
+          largeImageURL,
+          tags,
+          likes,
+          views,
+          comments,
+          downloads,
+        }) => {
+          return `
   <div class="photo-card">
   <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" title="${tags}" loading="lazy"/></a>
   <div class="info">
@@ -72,13 +76,14 @@ function renderImg(data) {
     </p>
   </div>
 </div>`;
-      }
-    )
-    .join('');
-  imgContainer.innerHTML = markup;
-  loadMoreBtn.style.display = 'flex';
-  galleryIMG.refresh();
-  scrollPage();
+        }
+      )
+      .join('');
+    imgContainer.innerHTML = markup;
+    Notify.success(`Hooray! We found ${data.data.total} images.`);
+    loadMoreBtn.style.display = 'flex';
+    galleryIMG.refresh();
+  }
 }
 
 async function search(query, page) {
@@ -95,7 +100,7 @@ async function search(query, page) {
     },
   })
     .then(data => renderImg(data))
-    .catch(err => console.log(err));
+    .catch(renderError);
 }
 
 function loadMore() {
@@ -103,4 +108,10 @@ function loadMore() {
   galleryIMG.refresh();
   let value = searchInput.value;
   search(value, currentPage);
+  scrollPage();
+}
+function renderError(error) {
+  Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.'
+  );
 }
