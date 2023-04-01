@@ -45,7 +45,6 @@ function renderImg(data) {
       'Sorry, there are no images matching your search query. Please try again.'
     );
   } else if (data.data.hits.length !== 0) {
-    imgContainer.innerHTML = '';
     let markup;
     markup = data.data.hits
       .map(
