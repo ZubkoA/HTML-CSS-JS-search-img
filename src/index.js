@@ -14,15 +14,6 @@ loadMoreBtn.addEventListener('click', loadMore);
 
 loadMoreBtn.style.display = 'none';
 
-const scrollPage = () => {
-  const { height: cardHeight } =
-    imgContainer.firstElementChild.getBoundingClientRect();
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-};
-
 const galleryIMG = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
@@ -114,3 +105,11 @@ function renderError(error) {
     'Sorry, there are no images matching your search query. Please try again.'
   );
 }
+const scrollPage = () => {
+  const { height: cardHeight } =
+    imgContainer.firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+};
