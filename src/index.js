@@ -30,7 +30,7 @@ function onSearchForm(e) {
   search(getValue, currentPage);
 }
 function renderImg(data) {
-  console.log(data.data.hits.length);
+  console.log(data.data);
   if (data.data.hits.length === 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -49,17 +49,17 @@ function renderImg(data) {
           downloads,
         }) => {
           return `
-  <div class="photo-card">
+          <div class="photo-card">
   <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" title="${tags}" loading="lazy"/></a>
   <div class="info">
     <p class="info-item">
-      <b>Likes</b> <br>${likes}
+    <b>Likes</b> <br>${likes}
     </p>
     <p class="info-item">
-      <b>View</b> <br>${views}
+    <b>View</b> <br>${views}
     </p>
     <p class="info-item">
-      <b>Comments</b> <br>${comments}
+    <b>Comments</b> <br>${comments}
     </p>
     <p class="info-item">
       <b>Downloads</b><br> ${downloads}
@@ -73,6 +73,7 @@ function renderImg(data) {
     Notify.success(`Hooray! We found ${data.data.total} images.`);
     loadMoreBtn.style.display = 'flex';
     galleryIMG.refresh();
+    scrollPage();
   }
 }
 
@@ -95,10 +96,10 @@ async function search(query, page) {
 
 function loadMore() {
   currentPage++;
-  galleryIMG.refresh();
   let value = searchInput.value;
   search(value, currentPage);
-  scrollPage();
+  // galleryIMG.refresh();
+  // scrollPage();
 }
 function renderError(error) {
   Notify.failure(
@@ -109,7 +110,7 @@ const scrollPage = () => {
   const { height: cardHeight } =
     imgContainer.firstElementChild.getBoundingClientRect();
   window.scrollBy({
-    top: cardHeight * 2,
+    top: cardHeight * 6,
     behavior: 'smooth',
   });
 };
